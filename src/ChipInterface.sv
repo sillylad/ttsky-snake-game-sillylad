@@ -1,12 +1,12 @@
 `default_nettype none
 
 module ChipInterface (
-    input logic clk,
+    input logic clk, // 25 MHz clock
     input logic [6:0] btn,
     output logic R0, R1, G0, G1, B0, B1, VGA_HS, VGA_VS,
-    output logic [7:0] led
+    output logic blank,
+    output logic [6:0] led
 );
-    assign led = '0;
 
     // synchronize all input buttons w/2 FFs
     logic tmp_btn, rst_n;
@@ -33,6 +33,8 @@ module ChipInterface (
         else if(game_clk) begin
             dir <= sync_dir;
         end
+        // update the latched direction when the buttons have a non-zero value only
+        // else just stretch the old set of button presses
         else if(sync_dir) begin
             dir <= sync_dir;
         end
@@ -42,7 +44,6 @@ module ChipInterface (
     logic [9:0] col;
     logic [9:0] row;
     logic [3:0] VGA_R, VGA_G, VGA_B;
-    logic blank;
     logic game_clk, clk_60HZ;
 
     // Drive VGA timing signals
@@ -78,5 +79,9 @@ module ChipInterface (
     // blank out the RGB pins in non-display periods
     assign rgb = {VGA_R[1:0], VGA_G[1:0], VGA_B[1:0]};
     assign {R1, R0, G1, G0, B1, B0} = (~blank) ? rgb : '0;
+
+    // just make led display the button direction
+    assign led = {3'b0, dir};
+
 
 endmodule : ChipInterface

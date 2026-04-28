@@ -1,42 +1,45 @@
-![](../../workflows/gds/badge.svg) ![](../../workflows/docs/badge.svg) ![](../../workflows/test/badge.svg) ![](../../workflows/fpga/badge.svg)
+<!---
 
-# Tiny Tapeout Verilog Project Template
+This file is used to generate your project datasheet. Please fill in the information below and delete any unused
+sections.
 
-- [Read the documentation for project](docs/info.md)
+You can also include images in this folder and reference them in the markdown. Each image must be less than
+512 kb in size, and the combined size of all images must be less than 1 MB.
+-->
 
-## What is Tiny Tapeout?
+## How it works
+This project is a SV implementation of the Snake game, except the maximum 
+snake size is capped at 20 to fit the 1x2 tile limit, and the snake is rainbow
+for fun. The game is displayed via a VGA interface (640x480 resolution) and the gameboard
+is 8x8 tiles centered centered in the middle of the screen. Each game tile is 32x32 pixels
+so the gameboard is 256x256 pixels.
 
-Tiny Tapeout is an educational project that aims to make it easier and cheaper than ever to get your digital and analog designs manufactured on a real chip.
+The snake is implemented as a 20-tile shift register storing each tile of the current
+snake's row/col. This shift register takes up the majority of the tile space hence the cap
+at length=20. But, you can still keep playing the game after the maximum snake size
+is reached, the snake just won't grow anymore. You'll see the displayed scores turn 
+purple when the max size is reached and it will keep incrementing till score=99
+since I only put enough space for 2 BCD digits. If you're a total beast at snake game and 
+reach 99 points, the score will just hold at 99 as I didn't have the space for a
+special endgame visual.
 
-To learn more and get started, visit https://tinytapeout.com.
 
-## Set up your Verilog project
+## How to test
 
-1. Add your Verilog files to the `src` folder.
-2. Edit the [info.yaml](info.yaml) and update information about your project, paying special attention to the `source_files` and `top_module` properties. If you are upgrading an existing Tiny Tapeout project, check out our [online info.yaml migration tool](https://tinytapeout.github.io/tt-yaml-upgrade-tool/).
-3. Edit [docs/info.md](docs/info.md) and add a description of your project.
-4. Adapt the testbench to your design. See [test/README.md](test/README.md) for more information.
+1. Hook up a 25MHz clock to the chip (since the VGA is running at 640x480 resolution - 
+technically should be 25.175MHz pixel clock but 25MHz has been working just fine for me).
+2. Hook up rst_n to a button or something else that you can easily pulse.
+3. Hook up buttons or joystick to the ui_in[4:1] input pins aka the snake direction control pins.
+4. Also hook up a button to ui_in[7] for the start_game control input.
+5. Connect R0, R1, G0, G1, B0, B1 (6-bit RGB) and VGA_HS, VGA_VS pins to TinyVGA PMOD board, and connect that PMOD to a VGA monitor.
+6. You can also connect the output LEDs if you want, but this is optional as the LED
+outputs are just showing the current button presses.
+7. Hopefully you should be able to play now!
 
-The GitHub action will automatically build the ASIC files using [LibreLane](https://www.zerotoasiccourse.com/terminology/librelane/).
 
-## Enable GitHub actions to build the results page
-
-- [Enabling GitHub Pages](https://tinytapeout.com/faq/#my-github-action-is-failing-on-the-pages-part)
-
-## Resources
-
-- [FAQ](https://tinytapeout.com/faq/)
-- [Digital design lessons](https://tinytapeout.com/digital_design/)
-- [Learn how semiconductors work](https://tinytapeout.com/siliwiz/)
-- [Join the community](https://tinytapeout.com/discord)
-- [Build your design locally](https://www.tinytapeout.com/guides/local-hardening/)
-
-## What next?
-
-- [Submit your design to the next shuttle](https://app.tinytapeout.com/).
-- Edit [this README](README.md) and explain your design, how it works, and how to test it.
-- Share your project on your social network of choice:
-  - LinkedIn [#tinytapeout](https://www.linkedin.com/search/results/content/?keywords=%23tinytapeout) [@TinyTapeout](https://www.linkedin.com/company/100708654/)
-  - Mastodon [#tinytapeout](https://chaos.social/tags/tinytapeout) [@matthewvenn](https://chaos.social/@matthewvenn)
-  - X (formerly Twitter) [#tinytapeout](https://twitter.com/hashtag/tinytapeout) [@tinytapeout](https://twitter.com/tinytapeout)
-  - Bluesky [@tinytapeout.com](https://bsky.app/profile/tinytapeout.com)
+## External hardware
+1. 6x buttons, or 2x buttons if using joystick for move controls
+2. Joystick if desired
+3. VGA monitor + VGA cable
+4. TinyVGA PMOD connector (I only have 6-bit RGB)
+5. 4x LEDs if desired

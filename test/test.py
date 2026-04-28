@@ -26,11 +26,36 @@ async def test_project(dut):
     dut._log.info("Test project behavior")
 
     # Set the input values you want to test
-    dut.ui_in.value = 20
-    dut.uio_in.value = 30
+    
+    # simple test to simulate crashing into the wall and dying after eating 
+    # the first egg
 
-    # Wait for one clock cycle to see the output values
-    await ClockCycles(dut.clk, 1)
+    # hit the start game button
+    dut.ui_in.value = 0b000_0000_1
+    
+    # snake should eat an egg by just moving forwards, wait until that happens
+    while(dut.ci.snek.curr_score == 0):
+        await ClockCycles(dut.clk, 1) # just step the clock
+        pass
+    
+    # check that score incremented and snake grew
+    assert dut.ci.snek.curr_score == 1
+    assert dut.ci.snek.snake_length == 4
+    
+    # turn off start_game button
+    dut.ui_in.value = 0b000_0000_0
+    
+    # now the snake should die by just moving forwards and crashing into the wall
+    while(dut.ci.snek.collision == 0):
+        await ClockCycles(dut.clk, 1) # just step the clock
+        pass
+    
+    assert dut.ci.snek.collision == 1
+    await ClockCycles(dut.clk, 10000)
+    
+    assert dut.ci.snek.snake_length == 3
+    
+    
 
     # The following assersion is just an example of how to check the output values.
     # Change it to match the actual expected output of your module:
