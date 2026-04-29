@@ -45,9 +45,6 @@ module vga
     logic [19:0] VS_count;
     logic [10:0] HS_count;
 
-    logic is_hs_pw, is_hs_bp, is_hs_disp, is_hs_fp;
-    logic is_vs_pw, is_vs_bp, is_vs_disp, is_vs_fp;
-
     logic is_hs_pw, is_hs_disp;
     logic is_vs_pw, is_vs_disp;
 
