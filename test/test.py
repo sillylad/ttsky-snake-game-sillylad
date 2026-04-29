@@ -39,7 +39,7 @@ async def test_project(dut):
     dut.ui_in.value = 0b000_0000_1
     await ClockCycles(dut.clk, 5) # propagate btn input into dut
 
-    print(snek.start_game)
+    print(snek.start_game.value)
     
     # wait for game_clk so start_game gets used
     while True:
