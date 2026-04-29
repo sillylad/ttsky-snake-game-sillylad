@@ -77,7 +77,7 @@ module ChipInterface (
     logic [5:0] rgb;
     
     // blank out the RGB pins in non-display periods
-    assign rgb = {VGA_R[1:0], VGA_G[1:0], VGA_B[1:0]};
+    assign rgb = {VGA_R, VGA_G, VGA_B};
     assign {R1, R0, G1, G0, B1, B0} = (~blank) ? rgb : '0;
 
     // just make led display the button direction

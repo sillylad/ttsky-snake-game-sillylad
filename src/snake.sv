@@ -12,7 +12,7 @@ module Snake (
     input logic start_game,
     input logic [3:0] dir,
     input logic [9:0] row, col,
-    output logic [3:0] VGA_R, VGA_G, VGA_B
+    output logic [1:0] VGA_R, VGA_G, VGA_B
 );
     logic is_snake;
     logic [$clog2(MAX_SNAKE_SIZE) : 0] snake_length;
@@ -533,16 +533,16 @@ module Color_Gameboard(
     input logic [5:0] fruit_pos,
     input logic [9:0] row, col,
     input logic [7:0] curr_score, high_score,
-    output logic [3:0] VGA_R, VGA_G, VGA_B,
+    output logic [1:0] VGA_R, VGA_G, VGA_B,
     output logic [MAX_SNAKE_SIZE - 1:0] snake_valid
 );
 
     logic is_score, is_snake;
-    logic [11:0] score_color;
+    logic [5:0] score_color;
     Score_Color sc (.curr_score(curr_score), .high_score(high_score),
                     .row(row), .col(col), .is_score(is_score));
 
-    assign score_color = (snake_length == MAX_SNAKE_SIZE) ? {4'hf, 4'h0, 4'hf} : {4'hf, 4'hf, 4'hf};
+    assign score_color = (snake_length == MAX_SNAKE_SIZE) ? {2'b11, 2'b00, 2'b11} : '1;
 
     logic [9:0] game_row, game_col;
     logic vga_in_grid;
@@ -591,16 +591,16 @@ module Color_Gameboard(
     logic display_fruit;
     assign display_fruit = (tile_row == fruit_pos[5:3]) && (tile_col == fruit_pos[2:0]);
 
-    logic [11:0] snake_color, fruit_color;
+    logic [5:0] snake_color, fruit_color;
 
     // RAINBOWWWW
-    logic [5:0][11:0] colors;
-    assign colors[0] = {4'hf, 4'h0, 4'h0}; // red 
-    assign colors[1] = {4'hf, 4'h2, 4'h0}; // orange
-    assign colors[2] = {4'hf, 4'hf, 4'h0}; // yellow
-    assign colors[3] = {4'h0, 4'hf, 4'h1}; // green
-    assign colors[4] = {4'h0, 4'h4, 4'hf}; // blue
-    assign colors[5] = {4'h2, 4'h0, 4'hf}; // violet
+    logic [5:0][5:0] colors;
+    assign colors[0] = {2'b11, 2'b00, 2'b00}; // red 
+    assign colors[1] = {2'b11, 2'b10, 2'b00}; // orange
+    assign colors[2] = {2'b11, 2'b11, 2'b00}; // yellow
+    assign colors[3] = {2'b00, 2'b11, 2'b01}; // green
+    assign colors[4] = {2'b00, 2'b00, 2'b11}; // blue
+    assign colors[5] = {2'b10, 2'b00, 2'b11}; // violet
 
 
     // make sure MAX_SNAKE_SIZE <= 32
@@ -613,7 +613,7 @@ module Color_Gameboard(
     end
 
     assign snake_color = colors[res6[2:0]];
-    assign fruit_color = {4'hf, 4'hf, 4'hf}; // SNAKE EATS (WHITE) EGG
+    assign fruit_color = '1; // SNAKE EATS (WHITE) EGG
 
     // Pick which color based on what's located at the current tile
     always_comb begin
