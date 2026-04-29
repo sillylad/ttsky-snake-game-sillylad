@@ -1,11 +1,4 @@
-<!---
-
-This file is used to generate your project datasheet. Please fill in the information below and delete any unused
-sections.
-
-You can also include images in this folder and reference them in the markdown. Each image must be less than
-512 kb in size, and the combined size of all images must be less than 1 MB.
--->
+![](../../workflows/gds/badge.svg) ![](../../workflows/docs/badge.svg) ![](../../workflows/test/badge.svg) ![](../../workflows/fpga/badge.svg)
 
 ## How it works
 This project is the Snake game, except the maximum snake size is capped at 20 to fit the 1x2 tile limit, and the snake is rainbow for fun. The game is displayed via a VGA interface (640x480 resolution) and the gameboard is 8x8 tiles centered centered in the middle of the screen. Each game tile is 32x32 pixels so the gameboard is 256x256 pixels.
