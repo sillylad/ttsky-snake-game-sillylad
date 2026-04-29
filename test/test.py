@@ -34,26 +34,34 @@ async def test_project(dut):
     dut.ui_in.value = 0b000_0000_1
     
     # snake should eat an egg by just moving forwards, wait until that happens
+    print("wait for score to increment")
     while(dut.ci.snek.curr_score == 0):
         await ClockCycles(dut.clk, 1) # just step the clock
         pass
     
+    
     # check that score incremented and snake grew
     assert dut.ci.snek.curr_score == 1
+    print("score incremented")
     assert dut.ci.snek.snake_length == 4
+    print("snake length increased")
     
     # turn off start_game button
     dut.ui_in.value = 0b000_0000_0
+    print("turning off start_game button")
     
+    print("waiting for snake to die")
     # now the snake should die by just moving forwards and crashing into the wall
     while(dut.ci.snek.collision == 0):
         await ClockCycles(dut.clk, 1) # just step the clock
         pass
-    
+
     assert dut.ci.snek.collision == 1
+    print("snake has died")
     await ClockCycles(dut.clk, 10000)
     
     assert dut.ci.snek.snake_length == 3
+    print("snake has gone back to length 3")
     
     
 
