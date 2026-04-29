@@ -8,11 +8,9 @@ You can also include images in this folder and reference them in the markdown. E
 -->
 
 ## How it works
-This project is a SV implementation of the Snake game, except the maximum 
-snake size is capped at 20 to fit the 1x2 tile limit, and the snake is rainbow
-for fun. The game is displayed via a VGA interface (640x480 resolution) and the gameboard is 8x8 tiles centered centered in the middle of the screen. Each game tile is 32x32 pixels so the gameboard is 256x256 pixels.
+This project is the Snake game, except the maximum snake size is capped at 20 to fit the 1x2 tile limit, and the snake is rainbow for fun. The game is displayed via a VGA interface (640x480 resolution) and the gameboard is 8x8 tiles centered centered in the middle of the screen. Each game tile is 32x32 pixels so the gameboard is 256x256 pixels.
 
-The snake is implemented as a 20-tile shift register storing each tile of the current snake's row/col. This shift register takes up the majority of the tile space hence the cap at length=20. But, you can still keep playing the game after the maximum snake size is reached, the snake just won't grow anymore. You'll see the displayed scores turn purple when the max size is reached and it will keep incrementing till score=99 since I only put enough space for 2 BCD digits. If you're a total beast at snake game and reach 99 points, the score will just hold at 99 as I didn't have the space for a special endgame visual.
+The snake is implemented as a 20-tile shift register storing each tile of the current snake's row/col. This shift register takes up the majority of the tile space hence the cap at length=20. But, you can still keep playing the game after the maximum snake size is reached, the snake just won't grow anymore. You'll see the displayed scores turn purple when the max size is reached and it will keep incrementing till score=99 since I only put enough space for 2 BCD digits. If you're a total beast at snake game and reach 99 points, the score will just hold at 99 until you eventually die.
 
 
 ## How to test
