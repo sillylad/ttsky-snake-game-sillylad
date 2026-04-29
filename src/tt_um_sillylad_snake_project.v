@@ -20,7 +20,7 @@ module tt_um_sillylad_top (
   assign uio_oe  = '1; // all output pins used by design
 
   // List all unused inputs to prevent warnings
-  wire _unused = &{ena, ui_in[7], ui_in[6], ui_in[5], 1'b0};
+  wire _unused = &{ena, ui_in[7], ui_in[6], ui_in[5], uio_in, 1'b0};
 
   // hook up "buttons" to the user input pins
   wire [6:0] btn;

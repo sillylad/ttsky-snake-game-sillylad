@@ -15,7 +15,6 @@ module Snake (
     output logic [3:0] VGA_R, VGA_G, VGA_B
 );
     logic is_snake;
-    logic [5:0] head_pos;
     logic [$clog2(MAX_SNAKE_SIZE) : 0] snake_length;
 
     // MAX_SNAKE_SIZE-element shift register for snake motion tracking
@@ -74,7 +73,6 @@ module Snake (
                     .new_head(new_head),
                     .collision(collision));
 
-    assign head_pos = snake_data[0]; // pull out of snake_register for debug
     
     // Fruit
     PRNG fruit_gen (.clk(clk), .game_clk(game_clk), .rst_n(rst_n),
@@ -120,7 +118,7 @@ module Snake (
                         .curr_score(curr_score),
                         .high_score(high_score),
                         .fruit_pos(fruit_pos),
-                        .row(row), .col(col), .is_snake(is_snake), .*);
+                        .row(row), .col(col), .*);
 
 endmodule : Snake
 
@@ -536,11 +534,10 @@ module Color_Gameboard(
     input logic [9:0] row, col,
     input logic [7:0] curr_score, high_score,
     output logic [3:0] VGA_R, VGA_G, VGA_B,
-    output logic is_snake,
     output logic [MAX_SNAKE_SIZE - 1:0] snake_valid
 );
 
-    logic is_score;
+    logic is_score, is_snake;
     logic [11:0] score_color;
     Score_Color sc (.curr_score(curr_score), .high_score(high_score),
                     .row(row), .col(col), .is_score(is_score));

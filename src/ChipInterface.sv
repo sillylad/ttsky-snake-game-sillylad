@@ -16,7 +16,7 @@ module ChipInterface (
     // VGA signals for driving display
     logic [9:0] col;
     logic [9:0] row;
-    logic [3:0] VGA_R, VGA_G, VGA_B;
+    logic [1:0] VGA_R, VGA_G, VGA_B;
     logic game_clk, clk_60HZ;
 
     always_ff @(posedge clk) begin
@@ -34,14 +34,14 @@ module ChipInterface (
     // slower game_clk
     always_ff @(posedge clk, negedge rst_n) begin
         if(~rst_n) begin
-            dir <= 1'b0;
+            dir <= '0;
         end
         else if(game_clk) begin
             dir <= sync_dir;
         end
         // update the latched direction when the buttons have a non-zero value only
         // else just stretch the old set of button presses
-        else if(sync_dir) begin
+        else if(|sync_dir) begin
             dir <= sync_dir;
         end
     end
