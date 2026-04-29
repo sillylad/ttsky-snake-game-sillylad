@@ -1,6 +1,7 @@
 `default_nettype none
 
-typedef enum logic [1:0] {MOVE_UP, MOVE_LEFT, MOVE_RIGHT, MOVE_DOWN} snake_move;
+typedef enum logic [1:0] {MOVE_UP, MOVE_LEFT, MOVE_RIGHT, MOVE_DOWN} snake_move_t;
+typedef enum logic [1:0] {IDLE, MOVING, DEAD} state_t;
 
 localparam MAX_SNAKE_SIZE = 20;
 localparam MAX_GAME_SCORE = 8'h99;
@@ -22,8 +23,9 @@ module Snake (
     logic [MAX_SNAKE_SIZE - 1:0] snake_valid;
     logic snake_init, grow, snake_enable, collision;
     logic [5:0] new_head;
+    logic [5:0] fruit_pos;
 
-    enum logic [1:0] {IDLE, MOVING, DEAD} curr_state;
+    state_t curr_state;
     
     always_ff @(posedge clk, negedge rst_n) begin
         if(~rst_n) begin
@@ -34,17 +36,17 @@ module Snake (
         else begin
             case(curr_state)
                 IDLE: begin
-                    curr_state <= (start_game & game_clk) ? MOVING : IDLE;
+                    curr_state <= state_t'((start_game & game_clk) ? MOVING : IDLE);
                     snake_init <= 1'b0;
                     snake_enable <= 1'b0;
                 end
                 MOVING: begin
-                    curr_state <= (collision) ? DEAD : MOVING;
+                    curr_state <= state_t'((collision) ? DEAD : MOVING);
                     snake_init <= collision;
                     snake_enable <= ~collision;
                 end
                 DEAD: begin
-                    curr_state <= (snake_init & game_clk) ? IDLE : DEAD;
+                    curr_state <= state_t'((snake_init & game_clk) ? IDLE : DEAD);
                     snake_init <= (snake_init & game_clk) ? 1'b0 : 1'b1;
                     snake_enable <= 1'b0;
                 end
@@ -75,7 +77,6 @@ module Snake (
     assign head_pos = snake_data[0]; // pull out of snake_register for debug
     
     // Fruit
-    logic [5:0] fruit_pos;
     PRNG fruit_gen (.clk(clk), .game_clk(game_clk), .rst_n(rst_n),
                     .snake_data(snake_data), .snake_valid(snake_valid),
                     .grow(grow), .snake_init(snake_init), .fruit_pos(fruit_pos));
@@ -137,7 +138,7 @@ module Snake_Register (
     output logic collision
 );
 
-    snake_move decoded_dir, fast_dir, curr_dir;
+    snake_move_t decoded_dir, fast_dir, curr_dir;
     logic wall_collision, self_collision;
 
     // Have a button priority for simplicity, in case multiple are pressed
@@ -167,7 +168,7 @@ module Snake_Register (
             curr_dir <= MOVE_RIGHT;
         end
         else if(game_clk) begin
-            curr_dir <= (snake_init) ? MOVE_RIGHT : fast_dir;
+            curr_dir <= snake_move_t'((snake_init) ? MOVE_RIGHT : fast_dir);
         end
     end
 
@@ -183,7 +184,7 @@ module Snake_Register (
         end
     end
 
-    task initialize_snake();
+    task automatic initialize_snake();
         // Initial snake length is 3 tiles
         snake_length <= ($clog2(MAX_SNAKE_SIZE) + 1)'('d3);
 
@@ -212,6 +213,7 @@ module Snake_Register (
             MOVE_RIGHT: new_head = {snake_data[0][5:3], snake_data[0][2:0] + 3'd1};
             MOVE_LEFT: new_head = {snake_data[0][5:3], snake_data[0][2:0] - 3'd1};
             MOVE_DOWN: new_head = {snake_data[0][5:3] + 3'd1, snake_data[0][2:0]};
+            default: new_head = {snake_data[0][5:3], snake_data[0][2:0] + 3'd1};
         endcase
     end
 
@@ -233,6 +235,9 @@ module Snake_Register (
     logic [$clog2(MAX_SNAKE_SIZE) - 1 : 0] check_idx;
     logic self_collision_found;
 
+    logic [5:0] check_segment;
+    assign check_segment = snake_data[check_idx];
+
     always_ff @(posedge clk, negedge rst_n) begin
         if(~rst_n) begin
             check_idx <= '0;
@@ -249,8 +254,13 @@ module Snake_Register (
             if(check_idx != ($clog2(MAX_SNAKE_SIZE)'(MAX_SNAKE_SIZE - 1))) begin
                 check_idx <= check_idx + 1'b1;
             end
-            if(snake_data[check_idx][5:3] == new_head[5:3] &
-               snake_data[check_idx][2:0] == new_head[2:0] &
+            // if(snake_data[check_idx][5:3] == new_head[5:3] &
+            //    snake_data[check_idx][2:0] == new_head[2:0] &
+            //    snake_valid[check_idx]) begin
+            //     self_collision_found <= 1'b1;
+            // end
+            if(check_segment[5:3] == new_head[5:3] &
+               check_segment[2:0] == new_head[2:0] &
                snake_valid[check_idx]) begin
                 self_collision_found <= 1'b1;
             end

@@ -13,6 +13,12 @@ module ChipInterface (
     logic [3:0] tmp_dir, dir, sync_dir;
     logic tmp_start_game, start_game;
 
+    // VGA signals for driving display
+    logic [9:0] col;
+    logic [9:0] row;
+    logic [3:0] VGA_R, VGA_G, VGA_B;
+    logic game_clk, clk_60HZ;
+
     always_ff @(posedge clk) begin
         tmp_btn <= btn[0];        
         rst_n <= tmp_btn;
@@ -39,12 +45,6 @@ module ChipInterface (
             dir <= sync_dir;
         end
     end
-
-    // VGA signals for driving display
-    logic [9:0] col;
-    logic [9:0] row;
-    logic [3:0] VGA_R, VGA_G, VGA_B;
-    logic game_clk, clk_60HZ;
 
     // Drive VGA timing signals
     vga vga_640_480 (.clk(clk), .rst_n(rst_n), .HS(VGA_HS), .VS(VGA_VS),

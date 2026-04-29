@@ -10,30 +10,19 @@ You can also include images in this folder and reference them in the markdown. E
 ## How it works
 This project is a SV implementation of the Snake game, except the maximum 
 snake size is capped at 20 to fit the 1x2 tile limit, and the snake is rainbow
-for fun. The game is displayed via a VGA interface (640x480 resolution) and the gameboard
-is 8x8 tiles centered centered in the middle of the screen. Each game tile is 32x32 pixels
-so the gameboard is 256x256 pixels.
+for fun. The game is displayed via a VGA interface (640x480 resolution) and the gameboard is 8x8 tiles centered centered in the middle of the screen. Each game tile is 32x32 pixels so the gameboard is 256x256 pixels.
 
-The snake is implemented as a 20-tile shift register storing each tile of the current
-snake's row/col. This shift register takes up the majority of the tile space hence the cap
-at length=20. But, you can still keep playing the game after the maximum snake size
-is reached, the snake just won't grow anymore. You'll see the displayed scores turn 
-purple when the max size is reached and it will keep incrementing till score=99
-since I only put enough space for 2 BCD digits. If you're a total beast at snake game and 
-reach 99 points, the score will just hold at 99 as I didn't have the space for a
-special endgame visual.
+The snake is implemented as a 20-tile shift register storing each tile of the current snake's row/col. This shift register takes up the majority of the tile space hence the cap at length=20. But, you can still keep playing the game after the maximum snake size is reached, the snake just won't grow anymore. You'll see the displayed scores turn purple when the max size is reached and it will keep incrementing till score=99 since I only put enough space for 2 BCD digits. If you're a total beast at snake game and reach 99 points, the score will just hold at 99 as I didn't have the space for a special endgame visual.
 
 
 ## How to test
 
-1. Hook up a 25MHz clock to the chip (since the VGA is running at 640x480 resolution - 
-technically should be 25.175MHz pixel clock but 25MHz has been working just fine for me).
+1. Hook up a 25MHz clock to the chip (since the VGA is running at 640x480 resolution - technically should be 25.175MHz pixel clock but 25MHz has been working just fine for me).
 2. Hook up rst_n to a button or something else that you can easily pulse.
 3. Hook up buttons or joystick to the ui_in[4:1] input pins aka the snake direction control pins.
 4. Also hook up a button to ui_in[7] for the start_game control input.
 5. Connect R0, R1, G0, G1, B0, B1 (6-bit RGB) and VGA_HS, VGA_VS pins to TinyVGA PMOD board, and connect that PMOD to a VGA monitor.
-6. You can also connect the output LEDs if you want, but this is optional as the LED
-outputs are just showing the current button presses.
+6. You can also connect the output LEDs if you want, but this is optional as the LED outputs are just showing the current button presses.
 7. Hopefully you should be able to play now!
 
 

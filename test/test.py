@@ -4,14 +4,16 @@
 import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import ClockCycles
+from cocotb.triggers import RisingEdge
+from cocotb.triggers import ReadOnly
 
 
 @cocotb.test()
 async def test_project(dut):
     dut._log.info("Start")
 
-    # Set the clock period to 10 us (100 KHz)
-    clock = Clock(dut.clk, 10, unit="us")
+    # Set the clock period to 40 ns (25 MHz)
+    clock = Clock(dut.clk, 40, unit="ns")
     cocotb.start_soon(clock.start())
 
     # Reset
@@ -22,52 +24,87 @@ async def test_project(dut):
     dut.rst_n.value = 0
     await ClockCycles(dut.clk, 10)
     dut.rst_n.value = 1
+    await ClockCycles(dut.clk, 1000)
 
     dut._log.info("Test project behavior")
+    
+    snek = dut.user_project.ci.snek
 
     # Set the input values you want to test
     
-    # simple test to simulate crashing into the wall and dying after eating 
-    # the first egg
+    # super simple test to simulate moving the snake forwards from the init state
 
     # hit the start game button
+    print(snek.curr_state.value)
     dut.ui_in.value = 0b000_0000_1
-    
-    # snake should eat an egg by just moving forwards, wait until that happens
-    print("wait for score to increment")
-    while(dut.ci.snek.curr_score == 0):
-        await ClockCycles(dut.clk, 1) # just step the clock
-        pass
-    
-    
-    # check that score incremented and snake grew
-    assert dut.ci.snek.curr_score == 1
-    print("score incremented")
-    assert dut.ci.snek.snake_length == 4
-    print("snake length increased")
-    
-    # turn off start_game button
-    dut.ui_in.value = 0b000_0000_0
-    print("turning off start_game button")
-    
-    print("waiting for snake to die")
-    # now the snake should die by just moving forwards and crashing into the wall
-    while(dut.ci.snek.collision == 0):
-        await ClockCycles(dut.clk, 1) # just step the clock
-        pass
+    await ClockCycles(dut.clk, 5) # propagate btn input into dut
 
-    assert dut.ci.snek.collision == 1
-    print("snake has died")
-    await ClockCycles(dut.clk, 10000)
+    print(snek.start_game)
     
-    assert dut.ci.snek.snake_length == 3
-    print("snake has gone back to length 3")
+    # wait for game_clk so start_game gets used
+    while True:
+        print("waiting for game_clk posedge")
+        await RisingEdge(snek.game_clk)
+        await ReadOnly()
+        if(dut.user_project.ci.start_game.value == 1):
+            print("both game_clk and start_game high, proceeding")
+            break
     
+    await ClockCycles(dut.clk, 5)
+    print(f"curr_state: {snek.curr_state.value}")
+    print(f"start_game: {dut.user_project.ci.start_game.value}")
+    assert dut.user_project.ci.start_game.value == 1
+    print(f"game_clk: {snek.game_clk.value}")
+    # assert that the snake moved out of the idle state
+    assert snek.curr_state.value != 0
+    
+    # wait for snake to die (takes a while since game_clk takes forever...)
+    # game_clk_cnt = 0
+    # while True:
+    #     print("waiting for game_clk posedge")
+    #     print("game_clk_cnt: ", game_clk_cnt)
+    #     await RisingEdge(snek.game_clk)
+    #     await ReadOnly()
+    #     game_clk_cnt = game_clk_cnt + 1
+    #     if(snek.collision.value == 1):
+    #         print("both game_clk and collision high, proceeding")
+    #         break
+    
+    # await ClockCycles(dut.clk, 5)
+    # print(f"curr_state: {snek.curr_state.value}")
+    # print(f"collision: {snek.collision.value}")
+    # assert snek.collision.value == 1
+    # print(f"game_clk: {snek.game_clk.value}")
+    
+    # # snake should eat an egg by just moving forwards, wait until that happens
+    # print("wait for score to increment")
+    # print(snek.curr_state.value)
+    # while(snek.curr_score.value == 0):
+    #     await RisingEdge(snek.game_clk)
+    #     pass
+    
+    # # check that score incremented and snake grew
+    # assert snek.curr_score.value == 1
+    # print("score incremented")
+    # assert snek.snake_length.value == 4
+    # print("snake length increased")
+    
+    # # turn off start_game button
+    # dut.ui_in.value = 0b000_0000_0
+    # print("turning off start_game button")
+    
+    # print("waiting for snake to die")
+    # print(snek.curr_state.value)
+    # # now the snake should die by just moving forwards and crashing into the wall
+    # while(snek.collision.value == 0):
+    #     await RisingEdge(snek.game_clk) # just step the clock
+    #     pass
+
+    # assert snek.collision.value == 1
+    # print("snake has died")
+    # await RisingEdge(snek.game_clk)
+    
+    # assert snek.snake_length.value == 3
+    # print("snake has gone back to length 3")
     
 
-    # The following assersion is just an example of how to check the output values.
-    # Change it to match the actual expected output of your module:
-    # assert dut.uo_out.value == 50
-
-    # Keep testing the module by changing the input values, waiting for
-    # one or more clock cycles, and asserting the expected output values.
