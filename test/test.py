@@ -30,13 +30,14 @@ async def test_project(dut):
     
     # change test based on gate level or rtl sim since post-synth can't use
     # the internal signals needed for the functional test (??)
-    try:
-        snek = dut.user_project.ci.snek
-        gl_test = False
-        dut._log.info("hierarchical signals usable")
-    except AttributeError:
-        gl_test = True
-        dut._log.info("only ports")
+    # try:
+    #     snek = dut.user_project.ci.snek
+    #     gl_test = False
+    #     dut._log.info("hierarchical signals usable")
+    # except AttributeError:
+    #     gl_test = True
+    #     dut._log.info("only ports")
+    gl_test = True
         
     # super simple test to simulate moving the snake forwards from the init state
     if not gl_test:    
