@@ -67,13 +67,14 @@ async def test_project(dut):
     # even more basic test for gate-level sim
     # just checking that the vga is ... alive
     else:
-        await ClockCycles(dut.clk, 10000000)
+        await ClockCycles(dut.clk, 1000)
         hs_seen = False
         
         # hs period is like 800 so this should be enough time...
         for i in range(1000):
             await ClockCycles(dut.clk, 100)
-            if dut.uo_out.value & 0b10:  # VGA_HS on uo[1]
+            if int(dut.uo_out.value) & 0b10:  # VGA_HS on uo[1]
+                print("hs has gone high!")
                 hs_seen = True
                 break
         
