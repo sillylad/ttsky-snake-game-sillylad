@@ -10,10 +10,10 @@ The snake is implemented as a 20-tile shift register storing each tile of the cu
 
 1. Hook up a 25MHz clock to the chip (since the VGA is running at 640x480 resolution - technically should be 25.175MHz pixel clock but 25MHz has been working just fine for me).
 2. Hook up rst_n to a button or something else that you can easily pulse.
-3. Hook up buttons or joystick to the ui_in[4:1] input pins aka the snake direction control pins.
+3. Hook up buttons or joystick to the ui_in[4:1] input pins (these correspond to the direction that the snake moves).
 4. Also hook up a button to ui_in[7] for the start_game control input.
-5. Connect R0, R1, G0, G1, B0, B1 (6-bit RGB) and VGA_HS, VGA_VS pins to TinyVGA PMOD board, and connect that PMOD to a VGA monitor.
-6. You can also connect the output LEDs if you want, but this is optional as the LED outputs are just showing the current button presses.
+5. Connect R0, R1, G0, G1, B0, B1 (6-bit RGB) and VGA_HS, VGA_VS pins to TinyVGA PMOD board, and connect that PMOD to a VGA monitor. {R0, R1, G0, G1, B0, B1} connect to uo[7:2] and {VGA_HS, VGA_VS} connect to uo[1:0].
+6. You can also connect the output LEDs if you want, but this is optional as the LED outputs are just showing the current button presses. These will be on the bidirectional I/O pins, uio[7:0].
 7. Hopefully you should be able to play now!
 
 
