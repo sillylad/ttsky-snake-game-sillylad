@@ -73,7 +73,7 @@ async def test_project(dut):
         # hs period is like 800 so this should be enough time...
         for i in range(1000):
             await ClockCycles(dut.clk, 100)
-            if int(dut.uo_out.value) & 0b10:  # VGA_HS on uo[1]
+            if int(dut.uo_out.value) & (1 << 7):  # VGA_HS on uo[7]
                 print("hs has gone high!")
                 hs_seen = True
                 break
