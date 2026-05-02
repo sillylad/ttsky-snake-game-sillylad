@@ -26,14 +26,12 @@ special endgame visual.
 
 ## How to test
 
-1. Hook up a 25MHz clock to the chip (since the VGA is running at 640x480 resolution - 
-technically should be 25.175MHz pixel clock but 25MHz has been working just fine for me).
+1. Hook up a 25MHz clock to the chip (since the VGA is running at 640x480 resolution - technically should be 25.175MHz pixel clock but 25MHz has been working just fine for me).
 2. Hook up rst_n to a button or something else that you can easily pulse.
-3. Hook up buttons or joystick to the ui_in[4:1] input pins aka the snake direction control pins.
-4. Also hook up a button to ui_in[7] for the start_game control input.
-5. Connect R0, R1, G0, G1, B0, B1 (6-bit RGB) and VGA_HS, VGA_VS pins to TinyVGA PMOD board, and connect that PMOD to a VGA monitor.
-6. You can also connect the output LEDs if you want, but this is optional as the LED
-outputs are just showing the current button presses.
+3. Hook up buttons or joystick to the ui_in[4:1] input pins. ui_in[4] = RIGHT, ui_in[3] = LEFT, ui_in[2] = DOWN, ui_in[1] = UP.
+4. Also hook up a button to ui_in[0] for the start_game control input.
+5. Connect R0, R1, G0, G1, B0, B1 (6-bit RGB) and VGA_HS, VGA_VS pins to TinyVGA PMOD board, and connect that PMOD to a VGA monitor. {VGA_HS, B0, G0, R0, VGA_VS, B1, G1, R1} connect to uo_out[7:0], as per the recommended TT VGA pinout.
+6. You can also connect the output LEDs if you want, but this is optional as the LED outputs are just showing the current button presses. These will be on the bidirectional I/O pins, uio[7:0].
 7. Hopefully you should be able to play now!
 
 

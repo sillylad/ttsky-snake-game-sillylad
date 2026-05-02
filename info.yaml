@@ -37,14 +37,14 @@ pinout:
   ui[7]: ""
 
   # Outputs
-  uo[0]: "VGA_VS"
-  uo[1]: "VGA_HS"
+  uo[0]: "R1"
+  uo[1]: "G1"
   uo[2]: "B1"
-  uo[3]: "B0"
-  uo[4]: "G1"
+  uo[3]: "VGA_VS"
+  uo[4]: "R0"
   uo[5]: "G0"
-  uo[6]: "R1"
-  uo[7]: "R0"
+  uo[6]: "B0"
+  uo[7]: "VGA_HS"
 
   # Bidirectional pins (all outputs for this design)
   uio[0]: "LED0"

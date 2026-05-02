@@ -31,15 +31,14 @@ module tt_um_sillylad_top (
   // set the last button to zero since it's not being used (only 6 buttons needed)
   assign btn[2] = 1'b0;
 
-// uo_out[7:2]  -> 6-bit RGB
-// uo_out[1:0]  -> VGA HS and VS sync signals for driving interface
+// uo_out[7:0]  -> 6-bit RGB and VGA VS and HS signals
 // uio_out[7]   -> blank signal for VGA (redundant)
 // uio_out[6:0] -> led outputs displaying button directions
 ChipInterface ci (.clk(clk), .btn(btn),
-                  .R0(uo_out[7]), .R1(uo_out[6]),
-                  .G0(uo_out[5]), .G1(uo_out[4]),
-                  .B0(uo_out[3]), .B1(uo_out[2]),
-                  .VGA_HS(uo_out[1]), .VGA_VS(uo_out[0]), .blank(uio_out[7]),
+                  .R0(uo_out[4]), .R1(uo_out[0]),
+                  .G0(uo_out[5]), .G1(uo_out[1]),
+                  .B0(uo_out[6]), .B1(uo_out[2]),
+                  .VGA_HS(uo_out[7]), .VGA_VS(uo_out[3]), .blank(uio_out[7]),
                   .led(uio_out[6:0]));
 
 endmodule
